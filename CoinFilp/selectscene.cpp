@@ -7,7 +7,7 @@
 
 SelectScene::SelectScene(QWidget *parent) : MyMainWindow(parent)
 {
-    //    QPushButton *btnBack = new QPushButton("Back",this);
+    // QPushButton *btnBack = new QPushButton("Back",this);
     QPushButton *btnBack = new MyPushButton(":/res/BackButton.png",":/res/BackButtonSelected.png",this);
     btnBack->resize(72,32);
     connect(btnBack,&QPushButton::clicked,this,&SelectScene::backBtnClicked);
@@ -23,8 +23,9 @@ SelectScene::SelectScene(QWidget *parent) : MyMainWindow(parent)
 
     for(int i = 0;i<20;++i)
     {
-        //        QPushButton *btn = new QPushButton(QString::number(i+1),this);
+        // QPushButton *btn = new QPushButton(QString::number(i+1),this);
         MyPushButton *btn = new MyPushButton(":/res/LevelIcon.png",":/res/LevelIcon.png",this);
+        // 带文字的按钮
         btn->setText(QString::number(i+1));
         // 排列
         int row = i/4;
@@ -34,6 +35,7 @@ SelectScene::SelectScene(QWidget *parent) : MyMainWindow(parent)
         int y = row * rowHeight + yOffset;
         btn->resize(57,57);
         btn->move(x,y);
+
         connect(btn,&MyPushButton::clicked,[=](){
             // 打开新的场景
             PlayScene *playScene = new PlayScene(i+1);
@@ -56,10 +58,11 @@ void SelectScene::paintEvent(QPaintEvent *event)
 {
     // 绘制背景图片
     QPainter painter(this);
-
+    // 移动绘图到菜单栏下方
     painter.translate(0,this->menuBar()->height());
     QPixmap pix(":/res/OtherSceneBg.png");
     painter.drawPixmap(0,0,this->width(),this->height(),pix);
+
     pix.load(":/res/Title.png");
     painter.drawPixmap(0,0,pix);
 }

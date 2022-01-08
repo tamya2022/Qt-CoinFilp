@@ -6,7 +6,7 @@ CoinButton::CoinButton(QWidget *parent) : QPushButton(parent)
 {
     // 初始状态设置
     this->setStat(0);
-    // 样式
+    // 样式设置
     this->setStyleSheet("QPushButton{border:0px;}");
 
     // 动画定时器信号和槽
@@ -18,7 +18,6 @@ CoinButton::CoinButton(QWidget *parent) : QPushButton(parent)
         else {
             this->mFrame++;
         }
-        // this->mFrame++;
         // 加载相应帧的图片
         QString frameName = QString(":/res/Coin000%1.png").arg(this->mFrame);
         this->setIcon(QIcon(frameName));
@@ -43,23 +42,20 @@ void CoinButton::setStat(int stat)
         this->setIcon(QIcon(":/res/Coin0001.png"));
     }
     else {
-        // 银币
+        // 银币图标
         this->setIcon(QIcon(":/res/Coin0008.png"));
     }
     this->setIconSize(this->size());
-
-    //    qDebug()<<"set OK";
 }
 
 void CoinButton::flip()
 {
-    //    this->setStat(!this->getStat());
+    //  this->setStat(!this->getStat());
     this->setStatWithAnimation(!this->getStat());
 }
 
 void CoinButton::setStatWithAnimation(int stat)
 {
-    qDebug()<<"stat:"<<stat;
     this->mStat = stat;
     if(this->mStat)
     {
@@ -68,7 +64,6 @@ void CoinButton::setStatWithAnimation(int stat)
     else {
         this->mFrame = 1;
     }
-    //    this->mFrame = 1;
     this->mTimer.start(30);
 }
 
@@ -78,15 +73,10 @@ void CoinButton::paintEvent(QPaintEvent *event)
     QPainter painter(this);
     QPixmap pix;
     pix.load(":/res/BoardNode.png");
-    //    pix.load(mNormalImg);
+
     painter.drawPixmap(0,0,this->width(),this->height(),pix);
     QPushButton::paintEvent(event);
-    //    if(this->mStat)
-    //    {
-    //        pix.load(":/res/Coin0001.png");
-    //    }
-    //    else {
-    //        pix.load(":/res/Coin0008.png");
-    //    }
-    //    painter.drawPixmap(0,0,this->width(),this->height(),pix);
 }
+
+
+void CoinButton::mouseDoubleClickEvent(QMouseEvent *event) {} //禁止使用 鼠标双击

@@ -24,7 +24,8 @@ public slots:
 private:
     CoinButton *mCoins[4][4];
     bool mHashWin;
-
+    QPushButton *btnRe;
+    int hLevel;
 };
 
 #endif // PLAYSCENE_H

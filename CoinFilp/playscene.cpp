@@ -13,16 +13,22 @@
 PlayScene::PlayScene(int level,QWidget *parent) : MyMainWindow(parent)
 {
     mHashWin = false;
+    hLevel = level;
     // 返回按钮
     QPushButton *btnBack = new MyPushButton(":/res/BackButton.png",":/res/BackButtonSelected.png",this);
     btnBack->resize(72,32);
+    btnBack->move(this->width()-btnBack->width(),this->height()-btnBack->height());
     connect(btnBack,&QPushButton::clicked,this,&PlayScene::backBtnClicked);
 
-    btnBack->move(this->width()-btnBack->width(),this->height()-btnBack->height());
+    // 重置按钮
+    btnRe = new MyPushButton(":/res/rebegin_1.png", ":/res/rebegin_2.png");
+    btnRe ->setParent(this);
+    btnRe->resize(50,50);
+    btnRe ->move((this->width()-btnRe->width())/2, 100);
 
-    // 添加左下角的Level
+    // 添加左下角的Level，设置父窗口为this
     QLabel *label = new QLabel(this);
-    label->setText(QString("Level:%1").arg(level));
+    label->setText(QString("Level:%1").arg(hLevel));
     label->resize(150,50);
     // 设置字体
     label->setFont(QFont("华文新魏",20));
@@ -35,7 +41,7 @@ PlayScene::PlayScene(int level,QWidget *parent) : MyMainWindow(parent)
 
     // 取出第几关的二维数组数据
     dataConfig data;
-    QVector <QVector <int> > dataArray = data.mData[level];
+    QVector <QVector <int> > dataArray = data.mData[hLevel];
 
     for(int row=0;row<4;++row)
     {
@@ -46,22 +52,32 @@ PlayScene::PlayScene(int level,QWidget *parent) : MyMainWindow(parent)
 
             int x = col * colWidth + xOffset;
             int y = row * rowHeight + yOffset;
-            // 从屏幕上（0，0）位置开始（即为最左上角的点），显示一个30*35的界面（宽30，高35）。
-            // setGeometry (0, 0, 30, 35)
+            // setGeometry (0, 0, 30, 35) 从屏幕上（0，0）位置开始，显示一个30*35的界面（宽30，高35）。
             btn->setGeometry(x,y,50,50);
             btn->setStat(dataArray[row][col]);
 
             connect(btn,&CoinButton::clicked,[=](){
-                // 每次点击时翻转
-                //                btn->flip();
+                // 点击时翻转
                 this->flip(row,col);
             });
         }
     }
+
+    connect(btnRe,&QPushButton::clicked,[=](){
+        // 点击时状态重置
+        for(int row=0;row<4;++row)
+        {
+            for(int col=0;col<4;++col)
+            {
+                mCoins[row][col]->setStat(dataArray[row][col]);
+            }
+        }
+    });
 }
 
 void PlayScene::flip(int row,int col)
 {
+    // 获胜后禁止翻动
     if(mHashWin)
     {
         return;
@@ -99,11 +115,10 @@ void PlayScene::judegWin()
     {
         for(int col=0;col<4;++col)
         {
-            //
             if(!this->mCoins[row][col]->getStat())
             {
-                // 不是全部金币，就返回
-                qDebug()<<"return ";
+                // 不是全部金币就返回
+                qDebug()<<"Not All Coin";
                 return;
             }
         }
@@ -111,12 +126,13 @@ void PlayScene::judegWin()
     mHashWin = true;
     QSound::play(":/res/LevelWinSound.wav");
     // 游戏结束
-    //    QMessageBox::information(this,"恭喜","你胜利了");
+    // QMessageBox::information(this,"恭喜","你胜利了");
     QLabel *labelWin = new QLabel(this);
     QPixmap pix = QPixmap(":/res/LevelCompletedDialogBg.png");
     labelWin->setPixmap(pix);
     labelWin->resize(pix.size());
     labelWin->show();
+    this->btnRe->hide();
 
     labelWin->move((this->width()-labelWin->width())/2,-labelWin->height());
 
@@ -129,6 +145,7 @@ void PlayScene::judegWin()
                                  ,labelWin->width()
                                  ,labelWin->height()));
     animation->setDuration(1000);
+    //  缓动曲线
     animation->setEasingCurve(QEasingCurve::OutBounce);
     animation->start(QAbstractAnimation::DeleteWhenStopped);
 }
