@@ -25,8 +25,6 @@ private:
     CoinButton *mCoins[4][4];
     bool mHashWin;
     QPushButton *btnRe;
-    QPushButton *btnNext;
-
     int hLevel;
 };
 
