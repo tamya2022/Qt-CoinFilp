@@ -22,5 +22,7 @@
         <file>res/PlayLevelSceneBg.png</file>
         <file>res/TapButtonSound.wav</file>
         <file>res/Title.png</file>
+        <file>res/rebegin_1.png</file>
+        <file>res/rebegin_2.png</file>
     </qresource>
 </RCC>
